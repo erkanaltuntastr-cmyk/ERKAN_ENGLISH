@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Session 02 - Nouns, Articles and Countability - Print Notes</title>
+<style>
+  :root{
+    --text:#111;
+    --muted:#555;
+    --border:#d8d8d8;
+    --soft:#f5f5f5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#fff;
+    color:var(--text);
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:11.5pt;
+    line-height:1.55;
+  }
+  .page{
+    max-width:210mm;
+    margin:0 auto;
+    padding:16mm 17mm 18mm;
+  }
+  .toolbar{
+    position:sticky;
+    top:0;
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    padding:10px 0;
+    margin-bottom:18px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:center;
+  }
+  .toolbar strong{font-size:10pt;color:var(--muted)}
+  button{
+    border:1px solid #222;
+    background:#fff;
+    color:#111;
+    padding:7px 12px;
+    border-radius:4px;
+    cursor:pointer;
+    font-weight:700;
+  }
+  h1{
+    font-size:23pt;
+    line-height:1.15;
+    margin:0 0 8mm;
+    border-bottom:2px solid #111;
+    padding-bottom:5mm;
+  }
+  h2{
+    font-size:16pt;
+    margin:11mm 0 4mm;
+    page-break-after:avoid;
+    border-bottom:1px solid var(--border);
+    padding-bottom:2mm;
+  }
+  h3{
+    font-size:13pt;
+    margin:7mm 0 3mm;
+    page-break-after:avoid;
+  }
+  h4{
+    font-size:11.5pt;
+    margin:5mm 0 2mm;
+    page-break-after:avoid;
+  }
+  p{margin:0 0 3.5mm}
+  ul,ol{margin:0 0 4mm 7mm;padding-left:5mm}
+  li{margin:0 0 1.5mm}
+  code{
+    font-family:Consolas, Monaco, monospace;
+    font-size:10pt;
+    background:var(--soft);
+    border:1px solid #e6e6e6;
+    border-radius:3px;
+    padding:0 3px;
+  }
+  pre{
+    font-family:Consolas, Monaco, monospace;
+    font-size:9.5pt;
+    line-height:1.45;
+    background:var(--soft);
+    border:1px solid #ddd;
+    padding:8px 10px;
+    white-space:pre-wrap;
+    page-break-inside:avoid;
+  }
+  blockquote{
+    margin:4mm 0;
+    padding:3mm 4mm;
+    border-left:4px solid #222;
+    background:#fafafa;
+  }
+  table{width:100%;border-collapse:collapse;margin:4mm 0;page-break-inside:avoid}
+  th,td{border:1px solid var(--border);padding:5px 7px;vertical-align:top}
+  th{background:#f1f1f1;text-align:left}
+  .meta{
+    color:var(--muted);
+    font-size:9.5pt;
+    border:1px solid var(--border);
+    background:#fafafa;
+    padding:7px 9px;
+    margin-bottom:6mm;
+  }
+  .loading{color:var(--muted);font-style:italic}
+  .error{border:1px solid #900;color:#900;padding:10px;background:#fff5f5}
+  @media print{
+    @page{size:A4;margin:13mm 14mm 15mm}
+    body{font-size:10.5pt}
+    .page{max-width:none;margin:0;padding:0}
+    .toolbar{display:none}
+    h1{font-size:20pt}
+    h2{font-size:14pt;break-before:auto}
+    h2:nth-of-type(n+3){break-before:page}
+    a{color:#000;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="toolbar">
+    <strong>Printer-friendly lesson notes. Content is loaded from the full Markdown study notes file.</strong>
+    <button onclick="window.print()">Print</button>
+  </div>
+  <div class="meta">
+    Source file: <code>session-02-nouns-articles-study-notes.md</code><br />
+    Print rule: full study notes, A4 layout, black text, clear headings, no app-only interface.
+  </div>
+  <main id="content"><p class="loading">Loading full study notes...</p></main>
+</div>
+<script>
+const SOURCE = 'session-02-nouns-articles-study-notes.md';
+
+function escapeHtml(s){
+  return String(s || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function inlineMarkdown(s){
+  return escapeHtml(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+
+function renderMarkdown(md){
+  const lines = md.replace(/\r\n/g, '\n').split('\n');
+  let html = '';
+  let inList = false;
+  let inOrdered = false;
+  let inPre = false;
+  let pre = [];
+
+  function closeLists(){
+    if (inList){ html += '</ul>'; inList = false; }
+    if (inOrdered){ html += '</ol>'; inOrdered = false; }
+  }
+
+  function flushPre(){
+    html += '<pre>' + escapeHtml(pre.join('\n')) + '</pre>';
+    pre = [];
+  }
+
+  for (const raw of lines){
+    const line = raw.trimEnd();
+
+    if (line.startsWith('```')){
+      if (!inPre){ closeLists(); inPre = true; pre = []; }
+      else { inPre = false; flushPre(); }
+      continue;
+    }
+
+    if (inPre){ pre.push(raw); continue; }
+
+    if (!line.trim()){
+      closeLists();
+      continue;
+    }
+
+    const h = line.match(/^(#{1,6})\s+(.*)$/);
+    if (h){
+      closeLists();
+      const level = Math.min(h[1].length, 4);
+      html += '<h' + level + '>' + inlineMarkdown(h[2]) + '</h' + level + '>';
+      continue;
+    }
+
+    const bullet = line.match(/^[-*]\s+(.*)$/);
+    if (bullet){
+      if (inOrdered){ html += '</ol>'; inOrdered = false; }
+      if (!inList){ html += '<ul>'; inList = true; }
+      html += '<li>' + inlineMarkdown(bullet[1]) + '</li>';
+      continue;
+    }
+
+    const ordered = line.match(/^\d+\.\s+(.*)$/);
+    if (ordered){
+      if (inList){ html += '</ul>'; inList = false; }
+      if (!inOrdered){ html += '<ol>'; inOrdered = true; }
+      html += '<li>' + inlineMarkdown(ordered[1]) + '</li>';
+      continue;
+    }
+
+    closeLists();
+    html += '<p>' + inlineMarkdown(line) + '</p>';
+  }
+
+  closeLists();
+  if (inPre){ flushPre(); }
+  return html;
+}
+
+fetch(SOURCE)
+  .then(r => {
+    if (!r.ok) throw new Error('Could not load ' + SOURCE + '. Run the local server from the repository root.');
+    return r.text();
+  })
+  .then(md => { document.getElementById('content').innerHTML = renderMarkdown(md); })
+  .catch(err => {
+    document.getElementById('content').innerHTML = '<div class="error"><strong>Cannot load notes.</strong><br>' + escapeHtml(err.message) + '</div>';
+  });
+</script>
+</body>
+</html>
