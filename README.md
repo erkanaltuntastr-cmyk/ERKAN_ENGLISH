@@ -6,6 +6,7 @@ PDF books are kept locally under `Sources/books/` but are ignored by Git. The re
 
 Start here:
 
+- `AI_README.md`
 - `index.html`
 - `Sources/source-index.md`
 - `Sources/books/README.md`
