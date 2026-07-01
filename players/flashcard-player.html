@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards — Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#fbf9f4;--surface-low:#f5f3ee;--surface-mid:#f0eee9;--card:#ffffff;
+  --border:#e4e2dd;--outline:#c4c8bf;
+  --text:#1b1c19;--muted:#444842;
+  --primary:#52604e;--primary-hover:#3d4a39;--primary-container:#d7e7d0;--on-primary:#ffffff;
+  --secondary:#8b4e3d;--secondary-container:#ffdbd1;
+  --correct:#3d4a39;--correct-bg:#dcfce7;
+  --wrong:#ba1a1a;--wrong-bg:#ffdad6;
+  --unsure:#8b4e3d;--unsure-bg:#ffdbd1;
+  --shadow:0 4px 16px rgba(125,140,120,.06);
+  --shadow-hover:0 10px 28px rgba(125,140,120,.12);
+  --radius-card:18px;--radius-btn:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--surface);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+h1,h2,h3{font-family:'Literata',Georgia,serif;letter-spacing:-.015em;font-weight:600}
+
+header{background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:var(--on-primary);padding:18px 28px;position:sticky;top:0;z-index:20;box-shadow:0 4px 16px rgba(82,96,78,.18)}
+header::after{content:'';position:absolute;top:-50%;right:-5%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,219,209,.18) 0%,transparent 60%);pointer-events:none}
+.hdr-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.hdr-title{flex:1;min-width:0}
+.hdr-title h1{font-size:1.05rem;font-weight:600;color:#fff;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-title p{font-size:.78rem;opacity:.85}
+.hdr-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;padding:7px 14px;border-radius:var(--radius-btn);font-size:.8rem;cursor:pointer;text-decoration:none;font-family:inherit;font-weight:600;transition:all .2s}
+.hdr-btn:hover{background:rgba(255,255,255,.22)}
+.progress-wrap{max-width:780px;margin:10px auto 0;padding:0 28px;display:none}
+.progress-wrap.show{display:block}
+.progress-bar-outer{height:6px;background:rgba(255,255,255,.2);border-radius:999px;overflow:hidden}
+.progress-bar-inner{height:100%;background:#fff;border-radius:999px;transition:width .4s;width:0%}
+.progress-label{font-size:.74rem;color:rgba(255,255,255,.85);margin-top:4px;text-align:right}
+
+main{max-width:780px;margin:0 auto;padding:32px 24px 60px}
+
+/* Intro */
+.intro{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:36px 32px;text-align:center;box-shadow:var(--shadow)}
+.intro h2{font-size:1.6rem;margin-bottom:12px;color:var(--text)}
+.intro .desc{font-size:.96rem;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.intro-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px;margin:24px 0 28px}
+.intro-stat{background:var(--surface-low);border-radius:var(--radius-btn);padding:14px}
+.intro-stat strong{font-family:'Literata',serif;font-size:1.4rem;color:var(--primary);display:block}
+.intro-stat span{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:4px;display:block}
+.cats-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px}
+.cat-tag{background:var(--primary-container);color:var(--primary-hover);font-size:.74rem;font-weight:600;padding:4px 10px;border-radius:999px}
+
+.btn{padding:11px 22px;border:none;border-radius:var(--radius-btn);font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--primary);color:var(--on-primary);box-shadow:0 2px 6px rgba(82,96,78,.2)}
+.btn-primary:hover{background:var(--primary-hover);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--outline);background:var(--surface-low)}
+.btn-big{padding:14px 32px;font-size:1rem}
+
+/* Card area */
+#card-area{display:none}
+#card-area.show{display:block}
+.flashcard-wrap{perspective:1500px;margin:0 auto 24px}
+.flashcard{background:var(--card);border:1px solid var(--border);border-radius:24px;min-height:340px;padding:36px 32px;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column;justify-content:center;transition:transform .2s,box-shadow .2s}
+.flashcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.card-head{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.card-cat{font-size:.74rem;background:var(--primary-container);color:var(--primary-hover);padding:4px 12px;border-radius:999px;font-weight:600}
+.card-mode{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-left:auto;font-weight:600}
+.card-side-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:12px;text-align:center}
+.card-front,.card-back{font-family:'Literata',serif;font-size:1.6rem;line-height:1.4;color:var(--text);text-align:center;font-weight:500}
+.card-note{margin-top:20px;font-size:.92rem;color:var(--muted);text-align:center;font-style:italic;line-height:1.5;border-top:1px solid var(--border);padding-top:16px}
+
+/* MCQ options */
+.options{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.option{padding:12px 18px;border:1.5px solid var(--outline);border-radius:var(--radius-btn);cursor:pointer;background:var(--surface-low);font-size:.98rem;font-family:inherit;color:var(--text);transition:all .2s;text-align:left}
+.option:hover{border-color:var(--primary);background:var(--card)}
+.option.selected{border-color:var(--primary);background:var(--primary-container);color:var(--primary-hover);font-weight:600}
+.option.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);font-weight:600}
+.option.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong);font-weight:600}
+.option:disabled{cursor:not-allowed}
+
+/* Self-mark buttons (classic mode) */
+.self-marks{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.sm-btn{padding:11px 18px;border-radius:var(--radius-btn);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;border:1.5px solid}
+.sm-known{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.sm-known:hover{background:var(--correct);color:#fff}
+.sm-unsure{background:var(--unsure-bg);border-color:var(--unsure);color:var(--unsure)}
+.sm-unsure:hover{background:var(--unsure);color:#fff}
+.sm-skip{background:var(--surface-low);border-color:var(--border);color:var(--muted)}
+.sm-skip:hover{background:var(--surface-mid)}
+
+/* Reveal / next buttons */
+.actions-bar{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.btn-flip{background:var(--primary);color:var(--on-primary);padding:11px 22px;border:none;border-radius:var(--radius-btn);font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-flip:hover{background:var(--primary-hover)}
+.btn-next{background:var(--primary-hover);color:var(--on-primary);padding:11px 22px;border:none;border-radius:var(--radius-btn);font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-next:hover{background:var(--primary)}
+
+/* Card nav */
+.card-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.card-nav-btn{background:transparent;border:1px solid var(--border);border-radius:var(--radius-btn);padding:7px 14px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s}
+.card-nav-btn:hover:not(:disabled){color:var(--text);border-color:var(--outline);background:var(--surface-low)}
+.card-nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.card-counter{font-size:.84rem;color:var(--muted);font-family:'Literata',serif}
+
+/* Results */
+.results-hero{background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:#fff;border-radius:var(--radius-card);padding:36px 32px;text-align:center;margin:0 0 24px;box-shadow:var(--shadow);position:relative;overflow:hidden;display:none}
+.results-hero.show{display:block}
+.results-hero::after{content:'';position:absolute;top:-30%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,219,209,.25) 0%,transparent 60%);pointer-events:none}
+.results-hero .score-big{font-family:'Literata',serif;font-size:3.5rem;font-weight:700;line-height:1}
+.results-hero .score-sub{font-size:1rem;opacity:.88;margin-top:6px}
+.results-hero .score-msg{margin-top:16px;font-size:1.02rem;font-weight:600;background:rgba(255,255,255,.16);padding:10px 22px;border-radius:999px;display:inline-block}
+.results-tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:24px;display:none}
+.results-tally.show{display:grid}
+.tally{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px 20px;text-align:center;box-shadow:var(--shadow)}
+.tally strong{font-family:'Literata',serif;font-size:2rem;display:block}
+.tally span{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:4px;display:block}
+.tally.correct strong{color:var(--correct)}
+.tally.unsure strong{color:var(--unsure)}
+.tally.wrong strong{color:var(--wrong)}
+
+.action-bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;display:none}
+.action-bar.show{display:flex}
+.btn-secondary{background:var(--secondary);color:var(--on-primary)}
+.btn-secondary:hover{background:#704031;transform:translateY(-1px)}
+
+/* Detailed report */
+.report-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:22px 26px;margin-bottom:14px;box-shadow:var(--shadow);display:none}
+.report-section.show{display:block}
+.report-section h3{font-size:1rem;margin-bottom:14px;color:var(--text)}
+.cat-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.cat-table th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;padding:6px 10px;border-bottom:2px solid var(--border)}
+.cat-table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.cat-table tr:last-child td{border-bottom:none}
+.cat-pct{font-weight:700;font-size:.95rem}
+.cat-bar-wrap{width:80px;height:8px;background:var(--surface-mid);border-radius:999px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+.cat-bar-fill{height:100%;border-radius:999px}
+.review-card{background:var(--wrong-bg);border:1px solid #f5c6c6;border-radius:var(--radius-btn);padding:12px 16px;margin-bottom:8px}
+.review-card:last-child{margin-bottom:0}
+.rc-front{font-weight:600;font-size:.9rem;color:var(--wrong);margin-bottom:5px}
+.rc-back{font-size:.88rem;color:var(--text);line-height:1.5}
+
+/* Error */
+.error-card{background:var(--card);border:1px solid var(--wrong);border-radius:var(--radius-card);padding:36px;text-align:center;box-shadow:var(--shadow)}
+.error-card h2{color:var(--wrong);margin-bottom:10px}
+.error-card p{color:var(--muted)}
+
+@media (max-width:520px){
+  .card-front,.card-back{font-size:1.3rem}
+  .flashcard{min-height:280px;padding:28px 22px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-inner">
+    <div class="hdr-title">
+      <h1 id="hdr-title">Yükleniyor…</h1>
+      <p id="hdr-sub"></p>
+    </div>
+    <a class="hdr-btn" id="hdr-exit-link" href="../index.html">← Çık</a>
+  </div>
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-label">0 / 0</div>
+  </div>
+</header>
+
+<main>
+  <div id="intro" class="intro" style="display:none">
+    <h2 id="intro-title"></h2>
+    <p class="desc" id="intro-desc"></p>
+    <div class="intro-stats" id="intro-stats"></div>
+    <div class="cats-row" id="cats-row"></div>
+    <button class="btn btn-primary btn-big" onclick="startDeck()">Başla →</button>
+  </div>
+
+  <div id="error-area"></div>
+
+  <div id="results-hero" class="results-hero">
+    <div class="score-big" id="score-big">—</div>
+    <div class="score-sub" id="score-sub"></div>
+    <div class="score-msg" id="score-msg"></div>
+  </div>
+  <div id="results-tally" class="results-tally"></div>
+  <div id="report-cats" class="report-section"></div>
+  <div id="report-review" class="report-section"></div>
+
+  <div id="card-area">
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="flashcard"></div>
+    </div>
+    <div class="card-nav">
+      <button class="card-nav-btn" id="prev-btn" onclick="prevCard()">← Önceki</button>
+      <span class="card-counter" id="counter">1 / 1</span>
+      <button class="card-nav-btn" id="next-btn" onclick="nextCard()">Next →</button>
+    </div>
+  </div>
+
+  <div id="action-bar" class="action-bar"></div>
+</main>
+
+<script src="../js/normalize.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/disk-sync.js"></script>
+<script src="../js/profiles.js"></script>
+<script src="../js/safe-html.js"></script>
+<script src="../js/data-paths.js"></script>
+<script src="../js/content-loader.js"></script>
+<script>
+let PACK = null;
+let PROFILE = null;
+let DECK = [];        // working copy of cards
+let IDX = 0;          // current card index
+let MARKS = {};       // cardId → { result: 'correct'|'wrong'|'known'|'unsure'|'skip', auto: bool, flipped: bool }
+let FINISHED = false;
+let RETURN_URL = '../index.html';
+
+function getReturnUrl(){
+  const params = new URLSearchParams(location.search);
+  const raw = params.get('returnTo');
+  if (!raw) return '../index.html';
+  try {
+    const decoded = decodeURIComponent(raw);
+    if (!decoded) return '../index.html';
+    if (/^(https?:|\/\/|javascript:)/i.test(decoded)) return '../index.html';
+    if (decoded.includes('..\\') || decoded.includes('../..')) return '../index.html';
+    return decoded;
+  } catch (e) {
+    return '../index.html';
+  }
+}
+
+function applyReturnUrl(){
+  RETURN_URL = getReturnUrl();
+  const hdr = document.getElementById('hdr-exit-link');
+  if (hdr) hdr.href = RETURN_URL;
+}
+
+function getPackJsonUrls(packId){
+  const filename = encodeURIComponent(packId) + '.json';
+  if (window.EceDataPaths && typeof EceDataPaths.listCandidatePaths === 'function'){
+    const candidates = EceDataPaths.listCandidatePaths('data/packs/' + filename);
+    if (location.protocol === 'file:'){
+      return candidates.map(path => '../' + path);
+    }
+    return candidates.map(path => EceDataPaths.toServerPath(path));
+  }
+  if (location.protocol === 'file:'){
+    return ['../data/packs/' + filename];
+  }
+  return ['/data/packs/' + filename];
+}
+
+async function ensurePackLoaded(packId){
+  if (!packId) return null;
+  let pack = null;
+
+  try {
+    const urls = getPackJsonUrls(packId);
+    for (const url of urls){
+      const resp = await fetch(url);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (window.EceContent && typeof EceContent.importPack === 'function'){
+          const imported = EceContent.importPack(data, { onConflict: 'overwrite' });
+          if (!imported || !imported.ok) {
+            console.warn('Pack import failed:', imported && imported.errors ? imported.errors : imported);
+            if (isUsableFlashcardPack(data, packId)) return data;
+          } else {
+            pack = typeof EceContent.findPack === 'function' ? EceContent.findPack(packId) : null;
+            if (pack) return pack;
+            if (isUsableFlashcardPack(data, packId)) return data;
+          }
+        } else if (isUsableFlashcardPack(data, packId)) {
+          return data;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Pack fetch failed:', e);
+  }
+
+  pack = window.EceContent && typeof EceContent.findPack === 'function'
+    ? EceContent.findPack(packId)
+    : null;
+  return pack || null;
+}
+
+function isUsableFlashcardPack(pack, packId){
+  return !!(
+    pack &&
+    pack.id === packId &&
+    pack.type === 'flashcard-pack' &&
+    Array.isArray(pack.cards) &&
+    pack.cards.length > 0
+  );
+}
+
+const escapeHtml = (window.EceSafeHtml && window.EceSafeHtml.escapeHtml) || function(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+};
+
+function showError(msg){
+  document.getElementById('error-area').innerHTML =
+    '<div class="error-card"><h2>⚠ Cannot Load</h2><p>' + escapeHtml(msg) + '</p><br><a class="btn btn-primary" href="' + escapeHtml(RETURN_URL) + '">← Back</a></div>';
+  document.getElementById('hdr-title').textContent = 'Error';
+}
+
+// ── Init ────────────────────────────────────────────────────────────
+async function init(){
+  applyReturnUrl();
+  const params = new URLSearchParams(location.search);
+  const packId = params.get('pack');
+
+  const active = EceProfiles.getActive();
+  if (!active){ location.href = '../index.html'; return; }
+  PROFILE = EceProfiles.getProfile(active.profileId);
+
+  if (!packId){ showError('?pack=... parametresi eksik.'); return; }
+
+  PACK = await ensurePackLoaded(packId);
+  if (!PACK){
+    showError('Assessment not found: "' + packId + '". Make sure data/packs/' + packId + '.json exists and the local server is running.');
+    return;
+  }
+  if (PACK.type !== 'flashcard-pack'){
+    showError('Bu oynatıcı flashcard-pack içindir. Bu pack: ' + PACK.type);
+    return;
+  }
+
+  renderIntro();
+}
+
+function renderIntro(){
+  document.getElementById('hdr-title').textContent = PACK.title;
+  document.getElementById('hdr-sub').textContent = PROFILE ? PROFILE.name : '';
+  document.getElementById('intro-title').textContent = PACK.title;
+  document.getElementById('intro-desc').textContent = PACK.description || '';
+
+  const n = PACK.cards.length;
+  const cats = Array.from(new Set(PACK.cards.map(c => c.category)));
+  const mcqCount = PACK.cards.filter(c => Array.isArray(c.options) && c.options.length > 0).length;
+  const classicCount = n - mcqCount;
+
+  const stats = [
+    { num: n, label: 'Kart' },
+    { num: cats.length, label: 'Kategori' },
+    { num: mcqCount, label: 'Çoktan seçmeli' }
+  ];
+  if (classicCount > 0) stats.push({ num: classicCount, label: 'Klasik çevir' });
+
+  document.getElementById('intro-stats').innerHTML = stats.map(s =>
+    '<div class="intro-stat"><strong>' + s.num + '</strong><span>' + s.label + '</span></div>'
+  ).join('');
+
+  document.getElementById('cats-row').innerHTML = cats.map(c =>
+    '<span class="cat-tag">' + escapeHtml(c) + '</span>'
+  ).join('');
+
+  document.getElementById('intro').style.display = 'block';
+}
+
+// ── Deck flow ───────────────────────────────────────────────────────
+function startDeck(){
+  DECK = PACK.cards.slice(); // could shuffle here later
+  IDX = 0;
+  MARKS = {};
+  FINISHED = false;
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('progress-wrap').classList.add('show');
+  document.getElementById('card-area').classList.add('show');
+  renderCard();
+}
+
+function renderCard(){
+  const c = DECK[IDX];
+  const isMcq = Array.isArray(c.options) && c.options.length > 0;
+  const mark = MARKS[c.id];
+  const flipped = mark && mark.flipped;
+
+  document.getElementById('counter').textContent = (IDX + 1) + ' / ' + DECK.length;
+  document.getElementById('prev-btn').disabled = (IDX === 0);
+  document.getElementById('next-btn').disabled = false; // can always go forward; finish on last
+  document.getElementById('next-btn').textContent = (IDX === DECK.length - 1) ? 'Bitir →' : 'Next →';
+
+  const fc = document.getElementById('flashcard');
+  const head = ''
+    + '<div class="card-head">'
+    +   '<span class="card-cat">' + escapeHtml(c.category) + '</span>'
+    +   '<span class="card-mode">' + (isMcq ? '🎯 Çoktan seçmeli' : '🃏 Çevir') + '</span>'
+    + '</div>';
+
+  if (!flipped){
+    // Front side
+    let body = '<div class="card-side-label">Ön Yüz</div>'
+      + '<div class="card-front">' + escapeHtml(c.front) + '</div>';
+    if (isMcq){
+      body += '<div class="options">'
+        + c.options.map((opt, i) => '<button class="option" onclick="pickOption(' + i + ')" data-i="' + i + '">' + escapeHtml(opt) + '</button>').join('')
+        + '</div>';
+    } else {
+      body += '<div class="actions-bar"><button class="btn-flip" onclick="flipCard()">Cevabı Gör 🔄</button></div>';
+    }
+    fc.innerHTML = head + body;
+  } else {
+    // Back / answer side
+    let body = '<div class="card-side-label">' + (isMcq ? 'Sonuç' : 'Arka Yüz') + '</div>'
+      + '<div class="card-back">' + escapeHtml(c.back) + '</div>';
+    if (c.note){
+      body += '<div class="card-note">' + escapeHtml(c.note) + '</div>';
+    }
+    if (isMcq && mark){
+      // Highlight option taken
+      body += '<div class="actions-bar">'
+        + '<span style="font-size:.92rem;color:' + (mark.result==='correct' ? 'var(--correct)' : 'var(--wrong)') + ';font-weight:600">'
+        + (mark.result==='correct' ? '✓ Correct cevap!' : '✗ Correct cevap: ' + escapeHtml(c.back))
+        + '</span></div>';
+      body += '<div class="actions-bar"><button class="btn-next" onclick="nextCard()">Next →</button></div>';
+    } else {
+      // Classic: show self-mark
+      body += '<div class="self-marks">'
+        + '<button class="sm-btn sm-known" onclick="selfMark(\'known\')">✓ Biliyordum</button>'
+        + '<button class="sm-btn sm-unsure" onclick="selfMark(\'unsure\')">~ Emin değildim</button>'
+        + '<button class="sm-btn sm-skip" onclick="selfMark(\'skip\')">Atla</button>'
+        + '</div>';
+    }
+    fc.innerHTML = head + body;
+  }
+  updateProgress();
+}
+
+function pickOption(i){
+  const c = DECK[IDX];
+  const picked = c.options[i];
+  const isCorrect = (picked === c.back);
+  MARKS[c.id] = { result: isCorrect ? 'correct' : 'wrong', auto: true, flipped: true, pickedIdx: i };
+  renderCard();
+  // Highlight options now that we re-rendered? No — renderCard goes to back face. That's fine.
+}
+
+function flipCard(){
+  const c = DECK[IDX];
+  MARKS[c.id] = MARKS[c.id] || { result: null, auto: false, flipped: true };
+  MARKS[c.id].flipped = true;
+  renderCard();
+}
+
+function selfMark(result){
+  const c = DECK[IDX];
+  MARKS[c.id] = { result: result, auto: false, flipped: true };
+  // auto-advance
+  if (IDX < DECK.length - 1){
+    IDX++;
+    renderCard();
+  } else {
+    finish();
+  }
+}
+
+function prevCard(){
+  if (IDX > 0){ IDX--; renderCard(); }
+}
+
+function nextCard(){
+  if (IDX < DECK.length - 1){
+    IDX++;
+    renderCard();
+  } else {
+    finish();
+  }
+}
+
+function updateProgress(){
+  const done = Object.keys(MARKS).filter(id => MARKS[id].result != null).length;
+  const total = DECK.length;
+  document.getElementById('progress-bar').style.width = ((done/total)*100) + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + total;
+}
+
+// ── Finalize ────────────────────────────────────────────────────────
+function finish(){
+  if (FINISHED) return;
+  FINISHED = true;
+
+  document.getElementById('card-area').classList.remove('show');
+  document.getElementById('progress-wrap').classList.remove('show');
+
+  // Tally
+  let correct = 0, wrong = 0, known = 0, unsure = 0, skip = 0, unmarked = 0;
+  const answers = [];
+  const catAgg = {};
+
+  DECK.forEach(c => {
+    const m = MARKS[c.id];
+    let result;
+    if (!m || m.result == null){ unmarked++; result = 'unmarked'; }
+    else if (m.result === 'correct'){ correct++; result = 'correct'; }
+    else if (m.result === 'wrong'){ wrong++; result = 'wrong'; }
+    else if (m.result === 'known'){ known++; result = 'correct'; } // count known as correct
+    else if (m.result === 'unsure'){ unsure++; result = 'wrong'; } // unsure counts as needs review
+    else if (m.result === 'skip'){ skip++; result = 'open'; }
+    else { result = m.result; }
+
+    answers.push({ id: c.id, result: result, hintUsed: false });
+
+    const cat = c.category || 'Other';
+    if (!catAgg[cat]) catAgg[cat] = { correct: 0, total: 0 };
+    catAgg[cat].total++;
+    if (result === 'correct') catAgg[cat].correct++;
+  });
+
+  const total = DECK.length;
+  const totalAuto = DECK.filter(c => Array.isArray(c.options) && c.options.length > 0).length;
+  const finalCorrect = correct + known; // auto-correct + self-marked-known
+  const finalScore = finalCorrect;
+  const pct = total > 0 ? Math.round((finalScore / total) * 100) : 0;
+
+  const sections = Object.keys(catAgg).map(name => {
+    const s = catAgg[name];
+    const sp = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+    return { name: name, score: s.correct, total: s.total, percentage: sp, status: EceNormalize.statusFor(sp) };
+  }).sort((a,b) => a.percentage - b.percentage);
+  const weak = sections.filter(s => s.percentage < 60).map(s => s.name);
+
+  // Hero
+  const hero = document.getElementById('results-hero');
+  document.getElementById('score-big').textContent = '%' + pct;
+  document.getElementById('score-sub').textContent = finalScore + ' / ' + total + ' Correct' + (unmarked ? ' · ' + unmarked + ' işaretsiz' : '');
+  const msg = pct >= 80 ? '🎉 Harika! Bu konuyu biliyorsun.'
+            : pct >= 60 ? '👍 İyi, bir-iki kartı tekrar et.'
+            : pct >= 40 ? '🌱 Bu kategoriyi biraz daha çalışalım.'
+            : '💪 Bu konu tekrar gerekiyor — birlikte halledeceğiz.';
+  document.getElementById('score-msg').textContent = msg;
+  hero.classList.add('show');
+
+  // Tally
+  const tally = document.getElementById('results-tally');
+  const tallyItems = [];
+  if (correct > 0) tallyItems.push({ cls: 'correct', num: correct, lbl: 'Correct (seçmeli)' });
+  if (wrong > 0) tallyItems.push({ cls: 'wrong', num: wrong, lbl: 'Incorrect (seçmeli)' });
+  if (known > 0) tallyItems.push({ cls: 'correct', num: known, lbl: 'Biliyordum' });
+  if (unsure > 0) tallyItems.push({ cls: 'unsure', num: unsure, lbl: 'Emin değildim' });
+  if (skip > 0) tallyItems.push({ cls: '', num: skip, lbl: 'Atlanan' });
+  if (unmarked > 0) tallyItems.push({ cls: '', num: unmarked, lbl: 'İşaretsiz' });
+  tally.innerHTML = tallyItems.map(t =>
+    '<div class="tally ' + t.cls + '"><strong>' + t.num + '</strong><span>' + t.lbl + '</span></div>'
+  ).join('');
+  tally.classList.add('show');
+
+  // ── Detailed report: category breakdown ─────────────────────────────
+  const catReport = document.getElementById('report-cats');
+  if (Object.keys(catAgg).length > 0){
+    let html = '<h3>📊 Kategori Bazlı Sonuç</h3>'
+      + '<table class="cat-table"><thead><tr><th>Kategori</th><th>Doğru</th><th>Toplam</th><th>Sonuç</th></tr></thead><tbody>';
+    sections.forEach(s => {
+      const color = s.percentage >= 80 ? 'var(--correct)' : s.percentage >= 60 ? '#d97706' : 'var(--wrong)';
+      html += '<tr>'
+        + '<td>' + escapeHtml(s.name) + '</td>'
+        + '<td>' + s.score + ' / ' + s.total + '</td>'
+        + '<td><span class="cat-pct" style="color:' + color + '">' + s.percentage + '%</span>'
+        +   '<span class="cat-bar-wrap"><span class="cat-bar-fill" style="width:' + s.percentage + '%;background:' + color + '"></span></span></td>'
+        + '<td style="font-size:.8rem;color:' + color + ';font-weight:600">' + escapeHtml(s.status) + '</td>'
+        + '</tr>';
+    });
+    html += '</tbody></table>';
+    catReport.innerHTML = html;
+    catReport.classList.add('show');
+  }
+
+  // ── Detailed report: cards that need review ──────────────────────────
+  const weakCards = DECK.filter(c => {
+    const m = MARKS[c.id];
+    return !m || m.result === 'wrong' || m.result === 'unsure' || m.result == null;
+  });
+  const reviewReport = document.getElementById('report-review');
+  if (weakCards.length > 0){
+    let html = '<h3>🔁 Tekrar Edilmesi Gerekenler — ' + weakCards.length + ' kart</h3>';
+    weakCards.forEach(c => {
+      html += '<div class="review-card">'
+        + '<div class="rc-front">❓ ' + escapeHtml(c.front) + '</div>'
+        + '<div class="rc-back">✓ ' + escapeHtml(c.back) + '</div>'
+        + '</div>';
+    });
+    reviewReport.innerHTML = html;
+    reviewReport.classList.add('show');
+  }
+
+  // ── Action bar (dynamic) ─────────────────────────────────────────────
+  const actionBar = document.getElementById('action-bar');
+  actionBar.innerHTML =
+    '<a class="btn btn-primary" href="' + escapeHtml(RETURN_URL) + '">← Çalışma Alanına Dön</a>'
+    + (weakCards.length > 0
+        ? '<button class="btn btn-secondary" onclick="retryWeak()">🔁 Zayıf kartları tekrar et (' + weakCards.length + ')</button>'
+        : '')
+    + '<button class="btn btn-ghost" onclick="location.reload()">Tümünü Tekrar Çöz</button>';
+  actionBar.classList.add('show');
+
+  // Persist canonical result
+  const result = {
+    profileId: PROFILE ? PROFILE.id : 'unknown',
+    packId: PACK.id,
+    packTitle: PACK.title,
+    subject: PACK.subject || 'unknown',
+    type: 'flashcard-pack',
+    date: new Date().toISOString(),
+    score: finalScore,
+    totalAuto: totalAuto,
+    totalQuestions: total,
+    percentage: pct,
+    openEndedCount: skip + unmarked,
+    sections: sections,
+    weakSections: weak,
+    answers: answers,
+    flashcards: { correct: correct, wrong: wrong, known: known, unsure: unsure, skip: skip, unmarked: unmarked }
+  };
+  EceStorage.saveResult(result);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Retry weak cards ────────────────────────────────────────────────
+function retryWeak(){
+  const weakCards = DECK.filter(c => {
+    const m = MARKS[c.id];
+    return !m || m.result === 'wrong' || m.result === 'unsure' || m.result == null;
+  });
+  if (weakCards.length === 0) return;
+
+  // Reset to weak-only deck
+  DECK = weakCards;
+  IDX = 0;
+  MARKS = {};
+  FINISHED = false;
+
+  // Hide all result panels
+  document.getElementById('results-hero').classList.remove('show');
+  document.getElementById('results-tally').classList.remove('show');
+  document.getElementById('report-cats').classList.remove('show');
+  document.getElementById('report-review').classList.remove('show');
+  document.getElementById('action-bar').classList.remove('show');
+
+  // Show card area
+  document.getElementById('progress-wrap').classList.add('show');
+  document.getElementById('card-area').classList.add('show');
+  document.getElementById('hdr-sub').textContent =
+    (PROFILE ? PROFILE.name + ' · ' : '') + '🔁 Zayıf kartlar — ' + weakCards.length + ' kart';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderCard();
+}
+
+init();
+</script>
+</body>
+</html>

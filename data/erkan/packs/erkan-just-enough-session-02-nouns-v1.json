@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.0",
+  "id": "erkan-just-enough-session-02-nouns-v1",
+  "type": "question-pack",
+  "title": "Session 02 - Nouns, Articles and Orders",
+  "subject": "english",
+  "description": "A short original diagnostic-practice set for nouns, articles, countability and natural work-English collocations.",
+  "estimatedMinutes": 15,
+  "questions": [
+    {
+      "id": "q01",
+      "topic": "Articles",
+      "difficulty": "core",
+      "type": "mcq",
+      "prompt": "Choose the most natural sentence.",
+      "options": [
+        "I work in food service sector.",
+        "I work in the food service sector.",
+        "I work in a food service sector."
+      ],
+      "answer": "I work in the food service sector.",
+      "explanation": "Use 'the' when referring to a recognised sector or industry."
+    },
+    {
+      "id": "q02",
+      "topic": "Plural nouns",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "Complete the sentence: Most of my customers are Turkish ____.",
+      "answer": "restaurants",
+      "accept": ["restaurants"],
+      "explanation": "'Most of my customers are...' needs a plural noun here."
+    },
+    {
+      "id": "q03",
+      "topic": "Articles",
+      "difficulty": "core",
+      "type": "mcq",
+      "prompt": "Choose the correct noun phrase: I want to create ____ regular ordering system.",
+      "options": ["a", "an", "the", "no article"],
+      "answer": "a",
+      "explanation": "'System' is a singular countable noun, so it needs an article."
+    },
+    {
+      "id": "q04",
+      "topic": "Collocation",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Which phrase is most natural in business English?",
+      "options": [
+        "A restaurant gives an order to me.",
+        "A restaurant places an order with me.",
+        "A restaurant makes order on me."
+      ],
+      "answer": "A restaurant places an order with me.",
+      "explanation": "The natural collocation is 'place an order with someone'."
+    },
+    {
+      "id": "q05",
+      "topic": "Countability",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the most natural sentence.",
+      "options": [
+        "I earn a salary and commission.",
+        "I earn salary and a commissions.",
+        "I have a salary and commissions on payments."
+      ],
+      "answer": "I earn a salary and commission.",
+      "explanation": "'Salary' is countable in this phrase; 'commission' is often used as an uncountable payment category."
+    },
+    {
+      "id": "q06",
+      "topic": "Prepositions",
+      "difficulty": "secure",
+      "type": "fill",
+      "prompt": "Complete the sentence: My commission is based ____ their monthly payments.",
+      "answer": "on",
+      "accept": ["on"],
+      "explanation": "The fixed phrase is 'based on'."
+    },
+    {
+      "id": "q07",
+      "topic": "Sentence correction",
+      "difficulty": "secure",
+      "type": "open",
+      "prompt": "Correct this sentence: My customers mostly Turkish restaurants.",
+      "answer": "Most of my customers are Turkish restaurants.",
+      "explanation": "The sentence needs the verb 'are' and a more natural subject phrase."
+    },
+    {
+      "id": "q08",
+      "topic": "Articles and spelling",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "Complete the sentence with two words: I work in ____ ____.",
+      "answer": "the UK",
+      "accept": ["the UK", "the uk"],
+      "explanation": "Use 'the UK' with the article and capital letters."
+    },
+    {
+      "id": "q09",
+      "topic": "Word form",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the correct version.",
+      "options": [
+        "I am interesting in AI.",
+        "I am interested in AI.",
+        "I interesting AI."
+      ],
+      "answer": "I am interested in AI.",
+      "explanation": "A person is 'interested in' something. A thing can be 'interesting'."
+    },
+    {
+      "id": "q10",
+      "topic": "Own sentence",
+      "difficulty": "stretch",
+      "type": "open",
+      "prompt": "Write one natural sentence using: a regular weekly order.",
+      "answer": "A good customer places a regular weekly order with me.",
+      "explanation": "Use this as a model, but your own natural sentence can also be correct."
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erkan English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#fbf9f4;--surface-low:#f5f3ee;--card:#fff;--border:#e4e2dd;
+  --text:#1b1c19;--muted:#51564f;--primary:#52604e;--primary-hover:#3d4a39;
+  --primary-container:#d7e7d0;--secondary:#8b4e3d;--shadow:0 8px 28px rgba(82,96,78,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--surface);color:var(--text);font-size:15px;line-height:1.6}
+h1,h2,h3{font-family:'Literata',Georgia,serif;font-weight:600;letter-spacing:0}
+header{background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:#fff;padding:28px 24px}
+.wrap{max-width:1040px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand h1{font-size:1.75rem}
+.brand p{opacity:.88;margin-top:4px}
+.pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:8px 14px;font-size:.82rem;font-weight:700}
+main{max-width:1040px;margin:0 auto;padding:28px 24px 56px}
+.hero{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px 26px;margin-bottom:22px;box-shadow:var(--shadow)}
+.hero h2{font-size:1.35rem;margin-bottom:8px}
+.hero p{color:var(--muted);max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 18px rgba(82,96,78,.06)}
+.card:hover{border-color:#c4c8bf;transform:translateY(-1px)}
+.card small{color:var(--secondary);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.card h3{font-size:1.05rem}
+.card p{font-size:.88rem;color:var(--muted)}
+.meta{margin-top:auto;padding-top:10px;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+.section-title{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--muted);margin:18px 0 10px}
+.quick{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:10px 14px;text-decoration:none;color:var(--text);font-weight:700;font-size:.88rem}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.history{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;min-height:72px}
+.history-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border);padding:10px 0}
+.history-row:last-child{border-bottom:0}
+.empty{color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <div class="brand">
+      <h1>Erkan English</h1>
+      <p>British English, work conversations, grammar repair and active practice.</p>
+    </div>
+    <div class="pill">Adult Learner</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Current focus: Just Enough Grammar Sprint</h2>
+    <p>Use this dashboard for short tests, flashcards, writing prompts and progress tracking. Book PDFs stay local; the app uses generated packs and notes.</p>
+  </section>
+
+  <div class="section-title">Assigned Practice</div>
+  <div id="packs" class="grid"></div>
+
+  <div class="section-title">Quick Links</div>
+  <div class="quick">
+    <a class="btn primary" href="Egitim%20Plani/03-just-enough-grammar-sprint.md">Sprint Plan</a>
+    <a class="btn" href="Gelisim%20notlari/just-enough-grammar-progress.md">Progress Notes</a>
+    <a class="btn" href="Gelisim%20notlari/mistakes-log.md">Mistakes Log</a>
+    <a class="btn" href="Sources/books/README.md">Book Guide</a>
+  </div>
+
+  <div class="section-title">Recent Results</div>
+  <div id="history" class="history"></div>
+</main>
+
+<script src="js/normalize.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/data-paths.js"></script>
+<script src="js/content-loader.js"></script>
+<script>
+const PACKS_URL = 'data/erkan/assignments/erkan.json';
+
+function escapeHtml(s){
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function playerHref(pack){
+  const encoded = encodeURIComponent(pack.id);
+  const returnTo = encodeURIComponent('../index.html');
+  if (pack.type === 'flashcard-pack') return 'players/flashcard-player.html?pack=' + encoded + '&returnTo=' + returnTo;
+  if (pack.type === 'writing-pack') return 'players/writing-player.html?pack=' + encoded + '&returnTo=' + returnTo;
+  return 'players/question-player.html?pack=' + encoded + '&returnTo=' + returnTo;
+}
+
+async function loadPack(id){
+  const resp = await fetch('data/erkan/packs/' + encodeURIComponent(id) + '.json');
+  if (!resp.ok) throw new Error('Pack not found: ' + id);
+  const pack = await resp.json();
+  if (window.EceContent) EceContent.importPack(pack, { onConflict: 'overwrite' });
+  return pack;
+}
+
+async function renderPacks(){
+  const box = document.getElementById('packs');
+  try {
+    const ids = await fetch(PACKS_URL).then(r => r.json());
+    const packs = await Promise.all(ids.map(loadPack));
+    box.innerHTML = packs.map(pack => {
+      const count = pack.questions ? pack.questions.length : (pack.cards ? pack.cards.length : (pack.stages ? pack.stages.length : 0));
+      const type = pack.type.replace('-pack', '');
+      return '<a class="card" href="' + playerHref(pack) + '">'
+        + '<small>' + escapeHtml(type) + '</small>'
+        + '<h3>' + escapeHtml(pack.title) + '</h3>'
+        + '<p>' + escapeHtml(pack.description || '') + '</p>'
+        + '<div class="meta"><span>' + count + ' items</span><span>' + escapeHtml((pack.estimatedMinutes || '?') + ' min') + '</span></div>'
+        + '</a>';
+    }).join('');
+  } catch (err) {
+    box.innerHTML = '<div class="history empty">Could not load assignments. Run a local server and refresh.</div>';
+    console.error(err);
+  }
+}
+
+function renderHistory(){
+  const results = EceStorage.getResults('erkan').slice(0, 5);
+  const box = document.getElementById('history');
+  if (!results.length){
+    box.innerHTML = '<div class="empty">No completed practice yet.</div>';
+    return;
+  }
+  box.innerHTML = results.map(r => {
+    const date = r.date ? new Date(r.date).toLocaleDateString('en-GB') : '';
+    return '<div class="history-row"><div><strong>' + escapeHtml(r.packTitle || r.packId) + '</strong><br><span style="color:var(--muted);font-size:.82rem">' + date + '</span></div><strong>' + (r.percentage || 0) + '%</strong></div>';
+  }).join('');
+}
+
+EceProfiles.ensureDefaults();
+EceProfiles.setActive('erkan');
+renderPacks();
+renderHistory();
+</script>
+</body>
+</html>

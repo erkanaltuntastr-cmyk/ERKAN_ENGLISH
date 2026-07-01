@@ -1,0 +1,790 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test — Question Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#fbf9f4;--surface-low:#f5f3ee;--surface-mid:#f0eee9;--card:#ffffff;
+  --border:#e4e2dd;--outline:#c4c8bf;
+  --text:#1b1c19;--muted:#444842;
+  --primary:#52604e;--primary-hover:#3d4a39;--primary-container:#d7e7d0;--on-primary:#ffffff;
+  --secondary:#8b4e3d;--secondary-container:#ffdbd1;
+  --correct:#3d4a39;--correct-bg:#dcfce7;
+  --wrong:#ba1a1a;--wrong-bg:#ffdad6;
+  --open:#8b4e3d;--open-bg:#ffdbd1;
+  --shadow:0 4px 16px rgba(125,140,120,.06);
+  --shadow-hover:0 10px 28px rgba(125,140,120,.12);
+  --radius-card:18px;--radius-btn:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--surface);color:var(--text);font-size:15px;line-height:1.6}
+h1,h2,h3{font-family:'Literata',Georgia,serif;letter-spacing:-.015em;font-weight:600}
+
+header{background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:var(--on-primary);padding:18px 28px;position:sticky;top:0;z-index:20;box-shadow:0 4px 16px rgba(82,96,78,.18)}
+header::after{content:'';position:absolute;top:-50%;right:-5%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,219,209,.18) 0%,transparent 60%);pointer-events:none}
+.hdr-inner{max-width:880px;margin:0 auto;display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.hdr-title{flex:1;min-width:0}
+.hdr-title h1{font-size:1.05rem;font-weight:600;color:#fff;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-title p{font-size:.78rem;opacity:.85}
+.hdr-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;padding:7px 14px;border-radius:var(--radius-btn);font-size:.8rem;cursor:pointer;text-decoration:none;font-family:inherit;font-weight:600;transition:all .2s}
+.hdr-btn:hover{background:rgba(255,255,255,.22)}
+
+.progress-wrap{max-width:880px;margin:0 auto;padding:10px 28px 0;display:none}
+.progress-wrap.show{display:block}
+.progress-bar-outer{height:6px;background:rgba(255,255,255,.2);border-radius:999px;overflow:hidden}
+.progress-bar-inner{height:100%;background:#fff;border-radius:999px;transition:width .4s;width:0%}
+.progress-label{font-size:.74rem;color:rgba(255,255,255,.85);margin-top:4px;text-align:right}
+
+main{max-width:880px;margin:0 auto;padding:32px 28px 60px}
+
+/* Intro */
+.intro{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:36px 32px;text-align:center;box-shadow:var(--shadow)}
+.intro h2{font-size:1.6rem;margin-bottom:12px;color:var(--text)}
+.intro .desc{font-size:.96rem;color:var(--muted);margin-bottom:24px;line-height:1.5}
+.intro-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px;margin:24px 0 28px}
+.intro-stat{background:var(--surface-low);border-radius:var(--radius-btn);padding:14px}
+.intro-stat strong{font-family:'Literata',serif;font-size:1.4rem;color:var(--primary);display:block}
+.intro-stat span{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:4px;display:block}
+.btn{padding:11px 22px;border:none;border-radius:var(--radius-btn);font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--primary);color:var(--on-primary);box-shadow:0 2px 6px rgba(82,96,78,.2)}
+.btn-primary:hover{background:var(--primary-hover);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--outline);background:var(--surface-low)}
+.btn-big{padding:14px 32px;font-size:1rem}
+
+/* Questions */
+#questions-area{display:none}
+#questions-area.show{display:block}
+.question{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:24px 26px;margin-bottom:16px;box-shadow:var(--shadow);scroll-margin-top:80px}
+.q-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.q-num{font-family:'Literata',serif;font-weight:600;font-size:1.1rem;color:var(--primary)}
+.q-topic{font-size:.74rem;background:var(--primary-container);color:var(--primary-hover);padding:3px 10px;border-radius:999px;font-weight:600}
+.q-diff{font-size:.7rem;padding:3px 9px;border-radius:999px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.diff-core{background:var(--surface-mid);color:var(--muted)}
+.diff-secure{background:var(--primary-container);color:var(--primary-hover)}
+.diff-stretch{background:var(--secondary-container);color:var(--secondary)}
+.q-type{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-left:auto;font-weight:600}
+.q-prompt{font-size:1rem;line-height:1.55;margin-bottom:14px;color:var(--text);white-space:pre-wrap}
+.q-figure{margin:12px 0 16px;background:var(--surface-low);border-radius:var(--radius-btn);padding:16px;text-align:center;border:1px solid var(--border)}
+.q-figure img{max-width:100%;height:auto;max-height:320px;border-radius:8px;display:inline-block}
+.q-input{width:100%;padding:12px 14px;border:1px solid var(--outline);border-radius:var(--radius-btn);font-size:1rem;font-family:inherit;background:var(--surface-low);color:var(--text);transition:all .2s}
+.q-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(82,96,78,.15);background:var(--card)}
+textarea.q-input{min-height:90px;resize:vertical;font-family:inherit}
+.q-options{display:flex;flex-direction:column;gap:8px}
+.q-option{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid var(--outline);border-radius:var(--radius-btn);cursor:pointer;background:var(--surface-low);transition:all .2s;font-size:.94rem}
+.q-option:hover{border-color:var(--primary);background:var(--card)}
+.q-option input{accent-color:var(--primary);margin:0}
+.q-option.selected{border-color:var(--primary);background:var(--primary-container);color:var(--primary-hover);font-weight:600}
+.q-actions{display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap}
+.btn-hint{background:transparent;color:var(--secondary);border:1px solid var(--secondary-container);padding:7px 14px;border-radius:var(--radius-btn);font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-hint:hover{background:var(--secondary-container)}
+.btn-hint:disabled{opacity:.5;cursor:default}
+.q-hint{margin-top:10px;background:var(--secondary-container);color:var(--secondary);padding:11px 14px;border-radius:var(--radius-btn);font-size:.88rem;line-height:1.45;display:none;border-left:3px solid var(--secondary)}
+.q-hint.show{display:block}
+
+/* Submit */
+.submit-section{text-align:center;margin:24px 0}
+#submit-btn{padding:14px 36px;font-size:1.05rem}
+#submit-note{font-size:.82rem;color:var(--muted);margin-top:10px;font-style:italic}
+
+/* Results state — questions become annotated */
+.question.correct-ans{border-left:4px solid var(--correct)}
+.question.wrong-ans{border-left:4px solid var(--wrong)}
+.question.open-ans{border-left:4px solid var(--open)}
+.q-feedback{margin-top:12px;padding:12px 14px;border-radius:var(--radius-btn);font-size:.88rem;display:none}
+.q-feedback.show{display:block}
+.q-feedback.correct{background:var(--correct-bg);color:var(--correct);border-left:3px solid var(--correct)}
+.q-feedback.wrong{background:var(--wrong-bg);color:var(--wrong);border-left:3px solid var(--wrong)}
+.q-feedback.open{background:var(--open-bg);color:var(--open);border-left:3px solid var(--open)}
+.q-feedback strong{font-weight:700}
+.q-feedback .your-ans{font-family:'Consolas','Monaco',monospace;background:rgba(255,255,255,.5);padding:1px 7px;border-radius:4px}
+.q-explain{margin-top:10px;font-size:.88rem;color:var(--muted);line-height:1.5;display:none}
+.q-explain.show{display:block}
+.open-mark-buttons{display:flex;gap:8px;margin-top:10px}
+.open-mark-btn{padding:8px 16px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--card);font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;transition:all .2s}
+.open-mark-btn:hover{transform:translateY(-1px)}
+.open-mark-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.open-mark-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.open-mark-btn.active{box-shadow:0 0 0 2px var(--text)}
+
+/* Results panel */
+.results-hero{background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:#fff;border-radius:var(--radius-card);padding:36px 32px;text-align:center;margin:0 0 24px;box-shadow:var(--shadow);position:relative;overflow:hidden;display:none}
+.results-hero.show{display:block}
+.results-hero::after{content:'';position:absolute;top:-30%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,219,209,.25) 0%,transparent 60%);pointer-events:none}
+.results-hero .score-big{font-family:'Literata',serif;font-size:3.5rem;font-weight:700;line-height:1}
+.results-hero .score-sub{font-size:1rem;opacity:.88;margin-top:6px}
+.results-hero .score-msg{margin-top:16px;font-size:1.02rem;font-weight:600;background:rgba(255,255,255,.16);padding:10px 22px;border-radius:999px;display:inline-block}
+.results-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:24px 26px;margin-bottom:18px;box-shadow:var(--shadow);display:none}
+.results-section.show{display:block}
+.results-section h3{font-family:'Literata',serif;font-size:1.15rem;margin-bottom:14px}
+.breakdown-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-row .nm{flex:1;font-weight:500}
+.bar-bg{flex:0 0 160px;height:7px;background:var(--surface-mid);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;transition:width .8s}
+.status-chip{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
+.chip-Strong{background:var(--primary-container);color:var(--primary-hover)}
+.chip-Good{background:#e7e9d8;color:var(--primary)}
+.chip-Review{background:var(--secondary-container);color:var(--secondary)}
+.chip-Practise{background:var(--wrong-bg);color:var(--wrong)}
+
+.action-bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;display:none}
+.action-bar.show{display:flex}
+
+/* Error */
+.error-card{background:var(--card);border:1px solid var(--wrong);border-radius:var(--radius-card);padding:36px;text-align:center;box-shadow:var(--shadow)}
+.error-card h2{color:var(--wrong);margin-bottom:10px}
+.error-card p{color:var(--muted)}
+
+/* ── Passage / Poem reading cards ───────────────────────────────────── */
+.reading-card{border-radius:var(--radius-card);padding:28px 28px 24px;margin-bottom:8px;box-shadow:var(--shadow);position:relative}
+.reading-card.passage{background:var(--primary-container);border:1px solid var(--outline)}
+.reading-card.poem{background:var(--secondary-container);border:1px solid rgba(139,78,61,.2)}
+.reading-card.reminder{background:var(--surface-mid);border:1px solid var(--border);padding:14px 20px}
+.reading-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.reading-card.passage .reading-label{color:var(--primary-hover)}
+.reading-card.poem .reading-label{color:var(--secondary)}
+.reading-card.reminder .reading-label{color:var(--muted)}
+.reading-label::before{content:'';display:inline-block;width:3px;height:14px;border-radius:2px;background:currentColor;flex-shrink:0}
+.reading-title{font-family:'Literata',Georgia,serif;font-size:1.15rem;font-weight:600;margin-bottom:16px;line-height:1.35}
+.reading-card.passage .reading-title{color:var(--primary-hover)}
+.reading-card.poem .reading-title{color:var(--secondary)}
+.reading-card.reminder .reading-title{font-size:.9rem;color:var(--muted);margin:0;font-family:inherit;font-weight:500}
+.reading-body{font-size:.96rem;line-height:1.75;color:var(--text)}
+.reading-body p{margin-bottom:1em}
+.reading-body p:last-child{margin-bottom:0}
+.reading-body.poem-text{white-space:pre-wrap;line-height:1.9;font-family:'Literata',Georgia,serif;font-size:1rem}
+.reading-divider{display:flex;align-items:center;gap:10px;margin:6px 0 14px;color:var(--outline);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+.reading-divider::before,.reading-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-inner">
+    <div class="hdr-title">
+      <h1 id="hdr-title">Loading…</h1>
+      <p id="hdr-sub"></p>
+    </div>
+    <a class="hdr-btn" id="hdr-exit-link" href="../index.html">← Exit</a>
+  </div>
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-label">0 / 0</div>
+  </div>
+</header>
+
+<main>
+  <div id="intro" class="intro" style="display:none">
+    <h2 id="intro-title"></h2>
+    <p class="desc" id="intro-desc"></p>
+    <div class="intro-stats" id="intro-stats"></div>
+    <button class="btn btn-primary btn-big" onclick="startTest()">Start →</button>
+  </div>
+
+  <div id="error-area"></div>
+
+  <div id="results-hero" class="results-hero">
+    <div class="score-big" id="score-big">—</div>
+    <div class="score-sub" id="score-sub"></div>
+    <div class="score-msg" id="score-msg"></div>
+  </div>
+
+  <div id="breakdown" class="results-section">
+    <h3>📊 Performance by Topic</h3>
+    <div id="breakdown-rows"></div>
+  </div>
+
+  <div id="questions-area"></div>
+
+  <div class="submit-section" id="submit-section" style="display:none">
+    <button class="btn btn-primary btn-big" id="submit-btn" onclick="submitTest()">Finish &amp; See Results</button>
+    <p id="submit-note">Open-ended questions are self-marked after submission.</p>
+  </div>
+
+  <div id="action-bar" class="action-bar">
+    <a class="btn btn-primary" id="results-back-link" href="../index.html">← Back</a>
+    <button class="btn btn-ghost" onclick="location.reload()">Try Again</button>
+  </div>
+</main>
+
+<script src="../js/normalize.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/disk-sync.js"></script>
+<script src="../js/profiles.js"></script>
+<script src="../js/safe-html.js"></script>
+<script src="../js/data-paths.js"></script>
+<script src="../js/content-loader.js"></script>
+<script src="../js/bank-loader.js"></script>
+<script>
+let PACK = null;
+let PROFILE = null;
+let STATE = { answers: {}, hintUsed: {}, openMarks: {}, started: false, submitted: false };
+let RETURN_URL = '../index.html';
+function getReturnUrl(){
+  const params = new URLSearchParams(location.search);
+  const raw = params.get('returnTo');
+  if (!raw) return '../index.html';
+  try {
+    const decoded = decodeURIComponent(raw);
+    if (!decoded) return '../index.html';
+    if (/^(https?:|\/\/|javascript:)/i.test(decoded)) return '../index.html';
+    return decoded;
+  } catch (_err) {
+    return '../index.html';
+  }
+}
+
+function applyReturnUrl(){
+  RETURN_URL = getReturnUrl();
+  const hdr = document.getElementById('hdr-exit-link');
+  const resultsBack = document.getElementById('results-back-link');
+  if (hdr) hdr.href = RETURN_URL;
+  if (resultsBack) resultsBack.href = RETURN_URL;
+}
+
+function getPackJsonUrls(packId){
+  const filename = encodeURIComponent(packId) + '.json';
+  if (window.EceDataPaths && typeof EceDataPaths.listCandidatePaths === 'function'){
+    const candidates = EceDataPaths.listCandidatePaths('data/packs/' + filename);
+    if (location.protocol === 'file:'){
+      return candidates.map(path => '../' + path);
+    }
+    return candidates.map(path => EceDataPaths.toServerPath(path));
+  }
+  if (location.protocol === 'file:'){
+    return ['../data/packs/' + filename];
+  }
+  return ['/data/packs/' + filename];
+}
+
+async function ensurePackLoaded(packId){
+  if (!packId) return null;
+  let pack = null;
+  let fetchedPack = null;
+
+  try {
+    const urls = getPackJsonUrls(packId);
+    for (const url of urls){
+      const resp = await fetch(url);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (isUsableQuestionPack(data, packId)) fetchedPack = data;
+        if (window.EceContent && typeof EceContent.importPack === 'function'){
+          try {
+            const imported = EceContent.importPack(data, { onConflict: 'overwrite' });
+            if (!imported || !imported.ok) {
+              console.warn('Pack import failed:', imported && imported.errors ? imported.errors : imported);
+              if (fetchedPack) return fetchedPack;
+            } else {
+              pack = typeof EceContent.findPack === 'function' ? EceContent.findPack(packId) : null;
+              if (pack) return pack;
+              if (fetchedPack) return fetchedPack;
+            }
+          } catch (importErr) {
+            console.warn('Pack import threw:', importErr);
+            if (fetchedPack) return fetchedPack;
+          }
+        } else if (fetchedPack) {
+          return fetchedPack;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Pack fetch failed:', e);
+  }
+
+  pack = window.EceContent && typeof EceContent.findPack === 'function'
+    ? EceContent.findPack(packId)
+    : null;
+  return pack || fetchedPack || null;
+}
+
+function isUsableQuestionPack(pack, packId){
+  return !!(
+    pack &&
+    pack.id === packId &&
+    pack.type === 'question-pack' &&
+    Array.isArray(pack.questions) &&
+    pack.questions.length > 0
+  );
+}
+
+// ── Init ────────────────────────────────────────────────────────────
+async function init(){
+  applyReturnUrl();
+  const params = new URLSearchParams(location.search);
+  const packId = params.get('pack');
+  const bankId = params.get('bank');
+
+  const active = EceProfiles.getActive();
+  if (!active){ location.href = '../index.html'; return; }
+  PROFILE = EceProfiles.getProfile(active.profileId);
+
+  // ── Bank mode: ?bank=<id>&section=...&count=N&shuffle=1 ──────────
+  if (bankId){
+    let bank = EceBankLoader.getBank(bankId);
+    if (!bank){
+      // Try loading from disk (requires EceDisk to be ready)
+      bank = await EceBankLoader.loadBank(bankId);
+    }
+    if (!bank){
+      showError(
+        'Question bank not found. ' +
+        'Make sure you have set up folder storage and the bank file is inside your data/banks/ folder. ' +
+        'Go back to the lesson page and try again after granting folder access.'
+      );
+      return;
+    }
+    const section  = params.get('section') || null;
+    const count    = params.get('count')   ? parseInt(params.get('count'), 10) : null;
+    const shuffle  = params.get('shuffle') === '1';
+    PACK = EceBankLoader.buildPack(bank, { section, count, shuffle });
+    renderIntro();
+    return;
+  }
+
+  // ── Pack mode: ?pack=<id> ────────────────────────────────────────
+  if (!packId){
+    showError('No pack specified. The URL is missing ?pack=...');
+    return;
+  }
+
+  PACK = await ensurePackLoaded(packId);
+  if (!PACK){
+    showError('Assessment not found: "' + packId + '". Make sure data/packs/' + packId + '.json exists and the local server is running.');
+    return;
+  }
+
+  if (PACK.type !== 'question-pack'){
+    showError('This player is for question-pack type only. This pack is: ' + PACK.type);
+    return;
+  }
+
+  renderIntro();
+}
+
+function showError(msg){
+  document.getElementById('error-area').innerHTML =
+    '<div class="error-card"><h2>⚠ Cannot Load</h2><p>' + escapeHtml(msg) + '</p><br><a class="btn btn-primary" href="' + escapeHtml(RETURN_URL) + '">← Back</a></div>';
+  document.getElementById('hdr-title').textContent = 'Error';
+}
+
+// ── Intro ───────────────────────────────────────────────────────────
+function renderIntro(){
+  document.getElementById('hdr-title').textContent = PACK.title;
+  document.getElementById('hdr-sub').textContent = PROFILE ? PROFILE.name : '';
+  document.getElementById('intro-title').textContent = PACK.title;
+  document.getElementById('intro-desc').textContent = PACK.description || '';
+  const n = PACK.questions.length;
+  const topics = new Set(PACK.questions.map(q => q.topic)).size;
+  const stats = [
+    { num: n, label: 'Questions' },
+    { num: topics, label: 'Topics' },
+    { num: (PACK.estimatedMinutes || '?') + ' min', label: 'Est. time' }
+  ];
+  document.getElementById('intro-stats').innerHTML = stats.map(s =>
+    '<div class="intro-stat"><strong>' + s.num + '</strong><span>' + s.label + '</span></div>'
+  ).join('');
+  document.getElementById('intro').style.display = 'block';
+}
+
+// ── Start ───────────────────────────────────────────────────────────
+function startTest(){
+  STATE.started = true;
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('progress-wrap').classList.add('show');
+  renderQuestions();
+  document.getElementById('questions-area').classList.add('show');
+  document.getElementById('submit-section').style.display = 'block';
+  updateProgress();
+}
+
+// ── Build lookup maps for passages and poems ────────────────────────
+function buildTextMaps(){
+  const pm = {}, po = {};
+  (PACK.passages || []).forEach(p => { pm[p.id] = p; });
+  (PACK.poems    || []).forEach(p => { po[p.id] = p; });
+  return { passageMap: pm, poemMap: po };
+}
+
+// ── Render passage or poem as a reading card ─────────────────────────
+function buildPassageHtml(item, isPoem, isReminder){
+  if (isReminder){
+    return '<div class="reading-label">📖 Passage / Poem</div>'
+         + '<div class="reading-title">↑ Scroll up to re-read: ' + escapeHtml(item.title) + '</div>';
+  }
+  const label = isPoem ? '📜 Read this poem' : '📖 Read this passage';
+  let body;
+  if (isPoem){
+    // Preserve stanza breaks (\n\n) and line breaks (\n)
+    body = '<div class="reading-body poem-text">' + escapeHtml(item.text) + '</div>';
+  } else {
+    // Split on double newlines → paragraphs
+    const paras = (item.text || '').split(/\n\n+/);
+    body = '<div class="reading-body">'
+         + paras.map(p => '<p>' + escapeHtml(p.trim()) + '</p>').join('')
+         + '</div>';
+  }
+  return '<div class="reading-label">' + label + '</div>'
+       + '<div class="reading-title">' + escapeHtml(item.title) + '</div>'
+       + '<div class="reading-divider">Questions below refer to this text</div>'
+       + body;
+}
+
+function renderQuestions(){
+  const area = document.getElementById('questions-area');
+  area.innerHTML = '';
+
+  const { passageMap, poemMap } = buildTextMaps();
+  const shownContexts = new Set(); // which passage/poem IDs have been shown as a full card
+  let lastContextId = null;
+
+  PACK.questions.forEach((q, idx) => {
+    // Determine this question's reading context
+    const contextId = q.passageId || q.poemId || null;
+
+    if (contextId && contextId !== lastContextId) {
+      const isPoem   = !!poemMap[contextId];
+      const item     = passageMap[contextId] || poemMap[contextId];
+      if (item) {
+        const isReminder = shownContexts.has(contextId);
+        const card = document.createElement('div');
+        card.className = 'reading-card ' + (isReminder ? 'reminder' : (isPoem ? 'poem' : 'passage'));
+        card.innerHTML = buildPassageHtml(item, isPoem, isReminder);
+        area.appendChild(card);
+        shownContexts.add(contextId);
+      }
+      lastContextId = contextId;
+    } else if (!contextId) {
+      lastContextId = null;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.id = 'q-' + q.id;
+    div.innerHTML = buildQuestionHtml(q, idx);
+    area.appendChild(div);
+  });
+
+  // Attach input listeners (handle both old and new type names)
+  PACK.questions.forEach(q => {
+    const isText = ['fill','mental','short_answer','sentence_edit','open','open_response'].includes(q.type);
+    if (isText){
+      const el = document.getElementById('input-' + q.id);
+      if (el) el.addEventListener('input', () => { STATE.answers[q.id] = el.value; updateProgress(); });
+    }
+  });
+}
+
+function buildQuestionHtml(q, idx){
+  const diffClass = 'diff-' + (q.difficulty || 'core');
+  // Support both old type names (mcq, open) and new (multiple_choice, open_response)
+  const TYPE_LABELS = {
+    fill:'Write', mental:'Mental', mcq:'Choose', multiple_choice:'Choose',
+    open:'Open-ended', open_response:'Open-ended',
+    short_answer:'Short answer', sentence_edit:'Edit', matching:'Match', sequencing:'Order'
+  };
+  const typeLabel = TYPE_LABELS[q.type] || q.type;
+
+  // Normalise type to a canonical group for rendering
+  const isMCQ  = q.type === 'mcq' || q.type === 'multiple_choice';
+  const isOpen = q.type === 'open' || q.type === 'open_response';
+  const isText = q.type === 'fill' || q.type === 'mental' || q.type === 'short_answer' || q.type === 'sentence_edit';
+
+  let inputHtml = '';
+  if (isText){
+    inputHtml = '<input type="text" class="q-input" id="input-' + q.id + '" placeholder="Write your answer" autocomplete="off"/>';
+  } else if (isMCQ){
+    inputHtml = '<div class="q-options">'
+      + (q.options || []).map((opt) => ''
+        + '<label class="q-option" onclick="selectOption(\'' + q.id + '\', this)">'
+        + '<input type="radio" name="mcq-' + q.id + '" value="' + escapeHtml(opt) + '" onchange="STATE.answers[\'' + q.id + '\']=this.value;updateProgress()" />'
+        + '<span>' + escapeHtml(opt) + '</span>'
+        + '</label>').join('')
+      + '</div>';
+  } else if (isOpen){
+    inputHtml = '<textarea class="q-input" id="input-' + q.id + '" placeholder="Write your answer — you will self-mark this after submitting"></textarea>';
+  } else {
+    // Fallback for matching/sequencing etc. — treat as open textarea
+    inputHtml = '<textarea class="q-input" id="input-' + q.id + '" placeholder="Write your answer"></textarea>';
+  }
+
+  let figure = '';
+  const imageSrc = getQuestionImage(q);
+  if (imageSrc){
+    const s = imageSrc.trim();
+    if (isSafeDataImage(s)){
+      figure = '<div class="q-figure"><img src="' + escapeHtml(s) + '" alt="Question visual" /></div>';
+    } else if (isSafeRelativeImage(s)){
+      // Relative path (e.g. "data/images/master/q43-foo.png"). Player is at /players/, prefix ../
+      const path = s.indexOf('../') === 0 || s.indexOf('/') === 0 ? s : '../' + s;
+      figure = '<div class="q-figure"><img src="' + escapeHtml(path) + '" alt="Question visual" loading="lazy" /></div>';
+    }
+    // Else: TODO_, inline SVG, remote URL, or unsupported image type. Do not render.
+  }
+
+  return ''
+    + '<div class="q-head">'
+    +   '<span class="q-num">' + (idx + 1) + '.</span>'
+    +   '<span class="q-topic">' + escapeHtml(q.topic || '') + '</span>'
+    +   '<span class="q-diff ' + diffClass + '">' + escapeHtml(q.difficulty || 'core') + '</span>'
+    +   '<span class="q-type">' + typeLabel + '</span>'
+    + '</div>'
+    + figure
+    + '<div class="q-prompt">' + escapeHtml(q.prompt || '') + '</div>'
+    + inputHtml
+    + '<div class="q-actions">'
+    +   (q.hint ? '<button class="btn-hint" id="hint-btn-' + q.id + '" onclick="showHint(\'' + q.id + '\')">💡 Hint</button>' : '')
+    + '</div>'
+    + (q.hint ? '<div class="q-hint" id="hint-' + q.id + '">' + escapeHtml(q.hint) + '</div>' : '')
+    + '<div class="q-feedback" id="fb-' + q.id + '"></div>'
+    + '<div class="q-explain" id="explain-' + q.id + '"></div>';
+}
+
+function selectOption(qid, labelEl){
+  document.querySelectorAll('label.q-option').forEach(el => {
+    if (el.querySelector('input[name="mcq-' + qid + '"]')) el.classList.remove('selected');
+  });
+  labelEl.classList.add('selected');
+}
+
+function showHint(qid){
+  STATE.hintUsed[qid] = true;
+  document.getElementById('hint-' + qid).classList.add('show');
+  const btn = document.getElementById('hint-btn-' + qid);
+  if (btn) btn.disabled = true;
+}
+
+function updateProgress(){
+  const answered = PACK.questions.filter(q => {
+    const a = STATE.answers[q.id];
+    return a != null && String(a).trim() !== '';
+  }).length;
+  const total = PACK.questions.length;
+  document.getElementById('progress-bar').style.width = ((answered/total)*100) + '%';
+  document.getElementById('progress-label').textContent = answered + ' / ' + total;
+}
+
+// ── Scoring ─────────────────────────────────────────────────────────
+function normalizeAnswer(s){
+  return String(s||'').trim().toLowerCase().replace(/\s+/g,'').replace(/[£$€,]/g,'');
+}
+
+function gradeQuestion(q){
+  const a = STATE.answers[q.id];
+  const isOpen = q.type === 'open' || q.type === 'open_response';
+  const isMCQ  = q.type === 'mcq'  || q.type === 'multiple_choice';
+  if (a == null || String(a).trim() === ''){
+    if (isOpen) return { result: 'open', auto: false };
+    return { result: 'wrong', auto: true };
+  }
+  if (isOpen){
+    return { result: 'open', auto: false };
+  }
+  if (isMCQ){
+    return { result: (a === q.answer ? 'correct' : 'wrong'), auto: true };
+  }
+  // fill / mental / short_answer / sentence_edit
+  const norm = normalizeAnswer(a);
+  const accepted = (q.accept || []).some(v => normalizeAnswer(v) === norm);
+  return { result: (accepted ? 'correct' : 'wrong'), auto: true };
+}
+
+function submitTest(){
+  if (STATE.submitted) return;
+  STATE.submitted = true;
+  document.getElementById('submit-section').style.display = 'none';
+
+  // Lock auto-marked inputs, attach feedback
+  PACK.questions.forEach(q => {
+    const grade = gradeQuestion(q);
+    const qEl = document.getElementById('q-' + q.id);
+    const isOpen = q.type === 'open' || q.type === 'open_response';
+    if (!isOpen){
+      const inp = qEl.querySelector('input, textarea');
+      if (inp) inp.disabled = true;
+      qEl.querySelectorAll('label.q-option input').forEach(i => i.disabled = true);
+      qEl.classList.add(grade.result === 'correct' ? 'correct-ans' : 'wrong-ans');
+      showFeedback(q, grade.result);
+    } else {
+      qEl.classList.add('open-ans');
+      showOpenSelfMark(q);
+    }
+  });
+
+  finalizeResults();
+}
+
+function showFeedback(q, result){
+  const fb = document.getElementById('fb-' + q.id);
+  const a = STATE.answers[q.id] || '(blank)';
+  let html = '';
+  if (result === 'correct'){
+    fb.className = 'q-feedback show correct';
+    html = '✓ <strong>Correct!</strong> Answer: <span class="your-ans">' + escapeHtml(q.answer) + '</span>';
+  } else {
+    fb.className = 'q-feedback show wrong';
+    html = '✗ <strong>Incorrect.</strong> Your answer: <span class="your-ans">' + escapeHtml(String(a)) + '</span> · Correct answer: <span class="your-ans">' + escapeHtml(q.answer) + '</span>';
+  }
+  fb.innerHTML = html;
+  if (q.explanation){
+    const ex = document.getElementById('explain-' + q.id);
+    ex.innerHTML = '<strong>Explanation:</strong> ' + escapeHtml(q.explanation);
+    ex.classList.add('show');
+  }
+}
+
+function showOpenSelfMark(q){
+  const fb = document.getElementById('fb-' + q.id);
+  fb.className = 'q-feedback show open';
+  fb.innerHTML = ''
+    + '<strong>Open-ended — mark yourself.</strong>'
+    + '<br><span style="font-size:.84rem;opacity:.85">Model answer: <span class="your-ans">' + escapeHtml(q.answer) + '</span></span>'
+    + '<div class="open-mark-buttons">'
+    +   '<button class="open-mark-btn correct" onclick="markOpen(\'' + q.id + '\', \'correct\', this)">✓ Got it right</button>'
+    +   '<button class="open-mark-btn wrong" onclick="markOpen(\'' + q.id + '\', \'wrong\', this)">✗ Got it wrong</button>'
+    + '</div>';
+  if (q.explanation){
+    const ex = document.getElementById('explain-' + q.id);
+    ex.innerHTML = '<strong>Explanation:</strong> ' + escapeHtml(q.explanation);
+    ex.classList.add('show');
+  }
+}
+
+function markOpen(qid, result, btn){
+  STATE.openMarks[qid] = result;
+  const parent = btn.parentNode;
+  parent.querySelectorAll('.open-mark-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Update the question card border
+  const qEl = document.getElementById('q-' + qid);
+  qEl.classList.remove('open-ans','correct-ans','wrong-ans');
+  qEl.classList.add(result === 'correct' ? 'correct-ans' : 'wrong-ans');
+  finalizeResults();
+}
+
+// ── Finalize ────────────────────────────────────────────────────────
+function finalizeResults(){
+  let correct = 0, wrong = 0, openPending = 0;
+  const answers = [];
+  const topicAgg = {}; // { topic: {correct:0, total:0} }
+
+  PACK.questions.forEach(q => {
+    const grade = gradeQuestion(q);
+    let finalResult = grade.result;
+    if (grade.result === 'open'){
+      const mark = STATE.openMarks[q.id];
+      if (mark === 'correct') finalResult = 'correct';
+      else if (mark === 'wrong') finalResult = 'wrong';
+      else { finalResult = 'open'; openPending++; }
+    }
+    answers.push({ id: q.id, result: finalResult, hintUsed: !!STATE.hintUsed[q.id] });
+    if (finalResult === 'correct') correct++;
+    else if (finalResult === 'wrong') wrong++;
+
+    // section breakdown by topic
+    const t = q.topic || 'Other';
+    if (!topicAgg[t]) topicAgg[t] = { correct: 0, total: 0 };
+    topicAgg[t].total++;
+    if (finalResult === 'correct') topicAgg[t].correct++;
+  });
+
+  const total = PACK.questions.length;
+  const totalAuto = PACK.questions.filter(q => q.type !== 'open' && q.type !== 'open_response').length;
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  const sections = Object.keys(topicAgg).map(name => {
+    const s = topicAgg[name];
+    const sp = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+    return { name: name, score: s.correct, total: s.total, percentage: sp, status: EceNormalize.statusFor(sp) };
+  }).sort((a,b) => a.percentage - b.percentage);
+
+  const weak = sections.filter(s => s.percentage < 60).map(s => s.name);
+
+  // Result hero
+  const hero = document.getElementById('results-hero');
+  document.getElementById('score-big').textContent = '%' + pct;
+  document.getElementById('score-sub').textContent = correct + ' / ' + total + ' correct' + (openPending ? ' · ' + openPending + ' open-ended pending' : '');
+  const msg = pct >= 80 ? '🎉 Excellent work!'
+            : pct >= 60 ? '👍 Good effort — review a few areas.'
+            : pct >= 40 ? '🌱 Some areas to work on — keep going.'
+            : '💪 Let\'s practise this topic some more.';
+  document.getElementById('score-msg').textContent = msg;
+  hero.classList.add('show');
+  // Move hero to top of main
+  document.querySelector('main').insertBefore(hero, document.querySelector('main').firstChild);
+
+  // Breakdown
+  document.getElementById('breakdown').querySelector('h3').textContent = '📊 Performance by Topic';
+  const breakdownRows = document.getElementById('breakdown-rows');
+  breakdownRows.innerHTML = sections.map(s => {
+    const color = s.percentage >= 80 ? '#22c55e' : s.percentage >= 60 ? '#52604e' : s.percentage >= 40 ? '#f59e0b' : '#ba1a1a';
+    return ''
+      + '<div class="breakdown-row">'
+      +   '<div class="nm">' + escapeHtml(s.name) + '</div>'
+      +   '<div style="font-size:.84rem;color:var(--muted);min-width:54px">%' + s.percentage + '</div>'
+      +   '<div class="bar-bg"><div class="bar-fill" style="width:' + s.percentage + '%;background:' + color + '"></div></div>'
+      +   '<span class="status-chip chip-' + s.status + '">' + s.status + '</span>'
+      + '</div>';
+  }).join('');
+  document.getElementById('breakdown').classList.add('show');
+  // Move breakdown right after hero
+  document.querySelector('main').insertBefore(document.getElementById('breakdown'), document.getElementById('questions-area'));
+
+  document.getElementById('action-bar').classList.add('show');
+
+  // Persist result
+  const result = {
+    profileId: PROFILE ? PROFILE.id : 'unknown',
+    packId: PACK.id,
+    packTitle: PACK.title,
+    subject: PACK.subject || 'unknown',
+    type: 'question-pack',
+    date: new Date().toISOString(),
+    score: correct,
+    totalAuto: totalAuto,
+    totalQuestions: total,
+    percentage: pct,
+    openEndedCount: PACK.questions.filter(q => q.type === 'open' || q.type === 'open_response').length,
+    sections: sections,
+    weakSections: weak,
+    answers: answers
+  };
+  EceStorage.saveResult(result);
+
+  // Scroll to top to show results
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Utils ───────────────────────────────────────────────────────────
+const escapeHtml = (window.EceSafeHtml && window.EceSafeHtml.escapeHtml) || function(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+};
+
+function isSafeDataImage(src){
+  return /^data:image\/(?:png|jpe?g|webp);base64,[a-z0-9+/=\s]+$/i.test(src);
+}
+
+function getQuestionImage(q){
+  if (!q) return '';
+  if (q.image && typeof q.image === 'string') return q.image;
+  return '';
+}
+
+function isSafeRelativeImage(src){
+  if (!src || src.indexOf('TODO_') === 0) return false;
+  if (/^(?:https?:|data:|javascript:|file:)/i.test(src)) return false;
+  if (src.indexOf('<') >= 0 || src.indexOf('>') >= 0) return false;
+  return /^(?:\.\.\/|\/)?[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(src);
+}
+
+init();
+</script>
+</body>
+</html>

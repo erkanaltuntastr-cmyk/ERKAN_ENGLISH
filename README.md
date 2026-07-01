@@ -6,7 +6,31 @@ PDF books are kept locally under `Sources/books/` but are ignored by Git. The re
 
 Start here:
 
+- `index.html`
 - `Sources/source-index.md`
 - `Sources/books/README.md`
 - `Egitim Plani/03-just-enough-grammar-sprint.md`
 - `Gelisim notlari/just-enough-grammar-progress.md`
+
+## Local App
+
+The learning interface is a small static app built from the reusable Ece Assessments player infrastructure.
+
+Run it locally from this folder:
+
+```powershell
+python -m http.server 8123 --bind 127.0.0.1
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8123/index.html
+```
+
+App content lives under:
+
+- `data/erkan/packs/`
+- `data/erkan/assignments/erkan.json`
+- `players/`
+- `js/`
