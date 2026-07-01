@@ -43,6 +43,7 @@ Active sequence:
 
 Read these files before continuing:
 
+- `Egitim Plani/00-output-standards.md`
 - `Egitim Plani/03-just-enough-grammar-sprint.md`
 - `Gelisim notlari/just-enough-grammar-progress.md`
 - `Olusturulan icerikler/grammar/just-enough-grammar/session-01-baseline.md`
@@ -52,6 +53,7 @@ Next expected work:
 
 - Session 02: nouns, articles, countability, and work-order vocabulary.
 - App pack already exists: `data/erkan/packs/erkan-just-enough-session-02-nouns-v1.json`
+- Session 02 additional packs exist: `data/erkan/packs/erkan-just-enough-session-02-nouns-flashcards-v1.json` and `data/erkan/packs/erkan-just-enough-session-02-nouns-repeat-v1.json`
 
 ## Repository Structure
 
@@ -59,7 +61,7 @@ Important folders:
 
 - `Sources/` - source catalogue and book guidance.
 - `Sources/books/` - local PDF reference library. PDF files are ignored by Git.
-- `Egitim Plani/` - learning plans and diagnostic plans.
+- `Egitim Plani/` - learning plans, diagnostic plans, and output standards.
 - `Olusturulan icerikler/` - generated notes, exercises, quizzes, corrections.
 - `Gelisim notlari/` - progress notes, mistakes log, current level.
 - `data/erkan/packs/` - JSON packs used by the local app.
@@ -103,9 +105,24 @@ Not allowed in tracked files:
 
 PDF files under `Sources/books/*.pdf` must remain local-only.
 
+## Output Standards
+
+Before creating any new lesson, quiz, test, flashcard set, or repeat practice, read:
+
+`Egitim Plani/00-output-standards.md`
+
+Mandatory rules:
+
+- All learner-facing content must be English only.
+- Lesson notes must be substantial, not short summaries.
+- Every lesson note must have a printer-friendly HTML version.
+- Tests, quizzes, exams, flashcards, and repeat practice must be interactive through the local HTML app.
+- Interactive activities must save answers or marks.
+- Every activity must produce an end report showing correct answers, wrong answers, model answers where relevant, explanations, topic performance, and weak areas to repeat.
+
 ## How To Create New Learning Content
 
-For every generated markdown lesson, include:
+For every generated lesson, include:
 
 ```text
 CEFR:
@@ -116,13 +133,23 @@ Date:
 Output type:
 ```
 
+For lesson notes:
+
+- Create full study notes first.
+- Create a printer-friendly `.print.html` version.
+- Keep the content substantial and useful for paper study.
+- Do not reduce the lesson to short bullets.
+- Use original examples close to Erkan's real work context.
+
 For every app pack:
 
 - Put JSON under `data/erkan/packs/`.
-- Add the pack ID to `data/erkan/assignments/erkan.json`.
+- Add the pack ID to `data/erkan/assignments/erkan.json` when it should appear on the dashboard.
 - Use original questions.
 - Keep examples close to Erkan's real work context.
 - Prefer short, frequent practice over large exams.
+- Ensure the player can save answers or marks.
+- Ensure the final report shows correct and wrong answers clearly.
 
 Useful pack types:
 
@@ -177,11 +204,13 @@ Completed:
 - Local app infrastructure added.
 - Session 01 baseline correction completed.
 - Session 02 nouns/articles practice pack created.
+- Session 02 study notes, flashcards, and repeat practice materials created.
+- Output standards added: printer-friendly lesson notes and interactive HTML activities with saved answers and reports.
 
 Next:
 
-1. Run Session 02 from the local app.
-2. Review results.
-3. Create `session-02-nouns-articles.md`.
-4. Update `just-enough-grammar-progress.md`.
-5. Add recurring mistakes to `mistakes-log.md`.
+1. Create printer-friendly HTML for the existing Session 02 study notes if it is not already present.
+2. Run Session 02 from the local app.
+3. Review results.
+4. Add recurring mistakes to `mistakes-log.md`.
+5. Mark Session 02 completed only after practice results and original work sentences are reviewed.
