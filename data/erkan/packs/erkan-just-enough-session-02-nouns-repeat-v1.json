@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "1.0",
+  "id": "erkan-just-enough-session-02-nouns-repeat-v1",
+  "type": "question-pack",
+  "title": "Session 02 - Nouns Repeat Practice",
+  "subject": "english",
+  "description": "Repeat practice for nouns, articles, countability, noun phrases and natural work-English corrections.",
+  "estimatedMinutes": 25,
+  "questions": [
+    {
+      "id": "q01",
+      "topic": "Articles",
+      "difficulty": "core",
+      "type": "mcq",
+      "prompt": "Choose the most natural sentence.",
+      "options": [
+        "I work in food service sector in UK.",
+        "I work in the food service sector in the UK.",
+        "I work in a food service sector in the UK."
+      ],
+      "answer": "I work in the food service sector in the UK.",
+      "explanation": "Use 'the food service sector' and 'the UK'."
+    },
+    {
+      "id": "q02",
+      "topic": "Plural nouns",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "Complete: Most of my ____ are Turkish restaurants.",
+      "answer": "customers",
+      "accept": ["customers"],
+      "explanation": "Use the plural noun after 'Most of my' when speaking about many customers."
+    },
+    {
+      "id": "q03",
+      "topic": "Plural nouns",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "Complete: We had two late ____ this week. (delivery)",
+      "answer": "deliveries",
+      "accept": ["deliveries"],
+      "explanation": "Delivery becomes deliveries."
+    },
+    {
+      "id": "q04",
+      "topic": "Articles",
+      "difficulty": "core",
+      "type": "mcq",
+      "prompt": "Choose the correct article: I want to create ____ regular ordering system.",
+      "options": ["a", "an", "the", "no article"],
+      "answer": "a",
+      "explanation": "System is a singular countable noun, so it needs an article."
+    },
+    {
+      "id": "q05",
+      "topic": "Countability",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the natural sentence.",
+      "options": [
+        "I need an information about the order.",
+        "I need some information about the order.",
+        "I need many information about the order."
+      ],
+      "answer": "I need some information about the order.",
+      "explanation": "Information is uncountable."
+    },
+    {
+      "id": "q06",
+      "topic": "Collocation",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the most natural business collocation.",
+      "options": [
+        "The customer gave an order to me.",
+        "The customer placed an order with me.",
+        "The customer made order on me."
+      ],
+      "answer": "The customer placed an order with me.",
+      "explanation": "Use 'place an order with someone'."
+    },
+    {
+      "id": "q07",
+      "topic": "Sentence jobs",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "In this sentence, what is the direct object? The customer placed an order.",
+      "answer": "an order",
+      "accept": ["an order", "order"],
+      "explanation": "Ask: placed what?"
+    },
+    {
+      "id": "q08",
+      "topic": "Sentence jobs",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "In this sentence, what is the subject? The delivery arrived late.",
+      "answer": "the delivery",
+      "accept": ["the delivery", "delivery"],
+      "explanation": "Ask: what arrived late?"
+    },
+    {
+      "id": "q09",
+      "topic": "Possessives",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the correct possessive phrase.",
+      "options": ["the customer order", "the customer's order", "the customers order"],
+      "answer": "the customer's order",
+      "explanation": "Use apostrophe + s for most singular possessive nouns."
+    },
+    {
+      "id": "q10",
+      "topic": "Possessives",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the correct phrase for many restaurants.",
+      "options": ["the restaurants' orders", "the restaurant's orders", "the restaurants orders"],
+      "answer": "the restaurants' orders",
+      "explanation": "A regular plural noun ending in s takes only the apostrophe."
+    },
+    {
+      "id": "q11",
+      "topic": "Zero article",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the general statement.",
+      "options": [
+        "The restaurants need reliable suppliers.",
+        "Restaurants need reliable suppliers.",
+        "A restaurants need reliable suppliers."
+      ],
+      "answer": "Restaurants need reliable suppliers.",
+      "explanation": "Use no article for general plural nouns."
+    },
+    {
+      "id": "q12",
+      "topic": "Zero article",
+      "difficulty": "secure",
+      "type": "mcq",
+      "prompt": "Choose the general statement.",
+      "options": [
+        "A quality is important.",
+        "Quality is important.",
+        "The quality are important."
+      ],
+      "answer": "Quality is important.",
+      "explanation": "Quality is usually uncountable when used generally."
+    },
+    {
+      "id": "q13",
+      "topic": "Noun phrases",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "Complete the noun phrase: product ____",
+      "answer": "quality",
+      "accept": ["quality"],
+      "explanation": "Product quality is a natural compound noun phrase."
+    },
+    {
+      "id": "q14",
+      "topic": "Noun phrases",
+      "difficulty": "core",
+      "type": "fill",
+      "prompt": "Complete the noun phrase: price ____",
+      "answer": "list",
+      "accept": ["list"],
+      "explanation": "Price list is the natural noun phrase."
+    },
+    {
+      "id": "q15",
+      "topic": "Correction",
+      "difficulty": "secure",
+      "type": "open",
+      "prompt": "Correct this sentence: Customer asked new price list.",
+      "answer": "The customer asked for the new price list.",
+      "explanation": "Use 'the customer', 'asked for', and 'the new price list'."
+    },
+    {
+      "id": "q16",
+      "topic": "Correction",
+      "difficulty": "secure",
+      "type": "open",
+      "prompt": "Correct this sentence: We had problem with delivery.",
+      "answer": "We had a problem with the delivery.",
+      "explanation": "Problem is singular countable; delivery is specific here."
+    },
+    {
+      "id": "q17",
+      "topic": "Correction",
+      "difficulty": "secure",
+      "type": "open",
+      "prompt": "Correct this sentence: My customers mostly Turkish restaurants.",
+      "answer": "Most of my customers are Turkish restaurants.",
+      "explanation": "The sentence needs a complete subject phrase and the verb 'are'."
+    },
+    {
+      "id": "q18",
+      "topic": "Correction",
+      "difficulty": "secure",
+      "type": "open",
+      "prompt": "Correct this sentence: I have salary and commissions on monthly payments.",
+      "answer": "I earn a salary and commission based on monthly payments.",
+      "explanation": "Use the natural payment collocations: earn a salary, earn commission, based on."
+    },
+    {
+      "id": "q19",
+      "topic": "Writing",
+      "difficulty": "stretch",
+      "type": "open",
+      "prompt": "Write one natural sentence using: a regular weekly order.",
+      "answer": "A good customer places a regular weekly order with me.",
+      "explanation": "Your own sentence can also be correct if the noun phrase is natural."
+    },
+    {
+      "id": "q20",
+      "topic": "Writing",
+      "difficulty": "stretch",
+      "type": "open",
+      "prompt": "Write one natural sentence using: product quality.",
+      "answer": "Product quality is very important for restaurant customers.",
+      "explanation": "Your own sentence can also be correct if the noun phrase is natural."
+    }
+  ]
+}
