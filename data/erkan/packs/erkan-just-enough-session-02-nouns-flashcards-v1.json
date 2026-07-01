@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "1.0",
+  "id": "erkan-just-enough-session-02-nouns-flashcards-v1",
+  "type": "flashcard-pack",
+  "title": "Session 02 - Nouns Flashcards",
+  "subject": "english",
+  "description": "Active recall cards for nouns, noun phrases, articles, countability and work-English order vocabulary.",
+  "estimatedMinutes": 20,
+  "cards": [
+    {
+      "id": "fc01",
+      "category": "Nouns",
+      "front": "What is a noun?",
+      "back": "A noun names a person, place, thing, group, idea, quality, action, or business concept.",
+      "note": "Work examples: customer, restaurant, order, quality, commission, relationship."
+    },
+    {
+      "id": "fc02",
+      "category": "Noun phrases",
+      "front": "What is a noun phrase?",
+      "back": "A noun phrase is a noun plus the words that belong with it.",
+      "note": "Examples: a regular weekly order; the restaurant owner; my regular customers."
+    },
+    {
+      "id": "fc03",
+      "category": "Articles",
+      "front": "Complete: I work in ____ food service sector in ____ UK.",
+      "back": "I work in the food service sector in the UK.",
+      "note": "Use the with recognised sectors and with the UK."
+    },
+    {
+      "id": "fc04",
+      "category": "Common nouns",
+      "front": "Give five common nouns from work English.",
+      "back": "customer, restaurant, order, invoice, delivery",
+      "note": "Other useful examples: product, price, payment, supplier, relationship."
+    },
+    {
+      "id": "fc05",
+      "category": "Proper nouns",
+      "front": "Which is correct: I live in London / I live in the London?",
+      "back": "I live in London.",
+      "note": "Most city names do not use the."
+    },
+    {
+      "id": "fc06",
+      "category": "Proper nouns",
+      "front": "Which is correct: I live in UK / I live in the UK?",
+      "back": "I live in the UK.",
+      "note": "Use the with the UK and the United Kingdom."
+    },
+    {
+      "id": "fc07",
+      "category": "Concrete nouns",
+      "front": "Is invoice a concrete noun or an abstract noun?",
+      "back": "Concrete noun.",
+      "note": "You can see an invoice, print it, send it, or check it."
+    },
+    {
+      "id": "fc08",
+      "category": "Abstract nouns",
+      "front": "Is quality a concrete noun or an abstract noun?",
+      "back": "Abstract noun.",
+      "note": "Quality is an idea or condition, not a physical object."
+    },
+    {
+      "id": "fc09",
+      "category": "Compound nouns",
+      "front": "Make a natural compound noun: price + list",
+      "back": "price list",
+      "note": "Example: The owner asked for the new price list."
+    },
+    {
+      "id": "fc10",
+      "category": "Compound nouns",
+      "front": "Make a natural compound noun: product + quality",
+      "back": "product quality",
+      "note": "Example: Product quality is important for restaurant customers."
+    },
+    {
+      "id": "fc11",
+      "category": "Plural nouns",
+      "front": "Correct: Most of my customer are Turkish restaurant.",
+      "back": "Most of my customers are Turkish restaurants.",
+      "note": "Most of my usually points to plural nouns here."
+    },
+    {
+      "id": "fc12",
+      "category": "Plural nouns",
+      "front": "What is the plural of delivery?",
+      "back": "deliveries",
+      "note": "We had two late deliveries this week."
+    },
+    {
+      "id": "fc13",
+      "category": "Plural nouns",
+      "front": "What is the plural of box?",
+      "back": "boxes",
+      "note": "The boxes arrived damaged."
+    },
+    {
+      "id": "fc14",
+      "category": "Countability",
+      "front": "Is customer countable or uncountable?",
+      "back": "Countable.",
+      "note": "A customer, two customers, many customers."
+    },
+    {
+      "id": "fc15",
+      "category": "Countability",
+      "front": "Is information countable or uncountable?",
+      "back": "Uncountable.",
+      "note": "Say some information, not an information."
+    },
+    {
+      "id": "fc16",
+      "category": "Countability",
+      "front": "Correct: I need an information about the order.",
+      "back": "I need some information about the order.",
+      "note": "Information is uncountable."
+    },
+    {
+      "id": "fc17",
+      "category": "Articles",
+      "front": "When do we use a?",
+      "back": "Use a before one general singular countable noun with a consonant sound.",
+      "note": "Examples: a customer, a restaurant, a product, a system."
+    },
+    {
+      "id": "fc18",
+      "category": "Articles",
+      "front": "When do we use an?",
+      "back": "Use an before one general singular countable noun with a vowel sound.",
+      "note": "Examples: an order, an invoice, an owner, an issue."
+    },
+    {
+      "id": "fc19",
+      "category": "Articles",
+      "front": "Correct: I want to create regular ordering system.",
+      "back": "I want to create a regular ordering system.",
+      "note": "System is singular and countable."
+    },
+    {
+      "id": "fc20",
+      "category": "Articles",
+      "front": "First and second mention: ___ restaurant called me. ___ restaurant wants the price list.",
+      "back": "A restaurant called me. The restaurant wants the price list.",
+      "note": "First mention: a. Known second mention: the."
+    },
+    {
+      "id": "fc21",
+      "category": "Zero article",
+      "front": "Correct generally: The restaurants need reliable suppliers.",
+      "back": "Restaurants need reliable suppliers.",
+      "note": "Use no article for general plural nouns."
+    },
+    {
+      "id": "fc22",
+      "category": "Zero article",
+      "front": "Correct generally: A quality is important.",
+      "back": "Quality is important.",
+      "note": "Use no article for general uncountable nouns."
+    },
+    {
+      "id": "fc23",
+      "category": "Sentence jobs",
+      "front": "Find the subject: The customer placed an order.",
+      "back": "The customer",
+      "note": "Ask: Who placed an order?"
+    },
+    {
+      "id": "fc24",
+      "category": "Sentence jobs",
+      "front": "Find the direct object: The customer placed an order.",
+      "back": "an order",
+      "note": "Ask: Placed what?"
+    },
+    {
+      "id": "fc25",
+      "category": "Sentence jobs",
+      "front": "Find the object of the preposition: with the customer",
+      "back": "the customer",
+      "note": "It comes after the preposition with."
+    },
+    {
+      "id": "fc26",
+      "category": "Possessives",
+      "front": "Correct: the customer order",
+      "back": "the customer's order",
+      "note": "Use apostrophe + s for most singular possessive nouns."
+    },
+    {
+      "id": "fc27",
+      "category": "Possessives",
+      "front": "Correct for many restaurants: the restaurants orders",
+      "back": "the restaurants' orders",
+      "note": "Regular plural nouns ending in s take only the apostrophe."
+    },
+    {
+      "id": "fc28",
+      "category": "Collocations",
+      "front": "Natural: give an order to me / place an order with me",
+      "back": "place an order with me",
+      "note": "A customer places an order with someone."
+    },
+    {
+      "id": "fc29",
+      "category": "Collocations",
+      "front": "Complete: My commission is based ____ monthly payments.",
+      "back": "on",
+      "note": "The fixed phrase is based on."
+    },
+    {
+      "id": "fc30",
+      "category": "Speaking pattern",
+      "front": "Say a clean three-sentence work introduction using nouns correctly.",
+      "back": "I work in the food service sector. Most of my customers are Turkish restaurants. My job is to help them place regular weekly orders.",
+      "note": "Practise until the noun phrases feel automatic."
+    }
+  ]
+}
